@@ -9,7 +9,7 @@ use serde::{Deserialize, Serialize};
 use std::vec::Vec;
 
 #[derive(Debug, Serialize, Deserialize)]
-pub struct Inputnote {
+pub struct InputNote {
     pub title: String,
 }
 
@@ -38,10 +38,9 @@ pub async fn get_note_by_id(
     )
 }
 
-// Handler for POST /notes
 pub async fn add_note(
     db: web::Data<Pool>,
-    item: web::Json<Inputnote>,
+    item: web::Json<InputNote>,
 ) -> Result<HttpResponse, Error> {
     Ok(web::block(move || add_single_note(db, item))
         .await
@@ -49,7 +48,6 @@ pub async fn add_note(
         .map_err(|_| HttpResponse::InternalServerError())?)
 }
 
-// Handler for DELETE /notes/{id}
 pub async fn delete_note(
     db: web::Data<Pool>,
     note_id: web::Path<i32>,
@@ -69,7 +67,7 @@ fn db_get_note_by_id(pool: web::Data<Pool>, note_id: i32) -> Result<Note, diesel
 
 fn add_single_note(
     db: web::Data<Pool>,
-    item: web::Json<Inputnote>,
+    item: web::Json<InputNote>,
 ) -> Result<Note, diesel::result::Error> {
     let conn = db.get().unwrap();
     let new_note = NewNote {
