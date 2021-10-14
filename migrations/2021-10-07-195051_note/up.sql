@@ -1,4 +1,4 @@
 CREATE TABLE notes (
   id SERIAL NOT NULL PRIMARY KEY,
-  title TEXT NOT NULL,
+  title TEXT NOT NULL
 );

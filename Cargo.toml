@@ -7,7 +7,17 @@ edition = "2018"
 
 [dependencies]
 actix-web = "*"
-diesel = { version = "*", features = ["postgres", "r2d2"] }
+actix-web-httpauth = { git = "https://github.com/actix/actix-web-httpauth" }
+chrono = { version = "*", features = ["serde"] }
+derive_more = "*"
+diesel = { version = "*", features = ["postgres","uuidv07", "r2d2", "chrono"] }
 dotenv = "*"
+futures = "*"
 r2d2 = "*"
 serde = "*"
+serde_derive = "*"
+serde_json = "*"
+actix-service = "*"
+alcoholic_jwt = "*"
+reqwest = "*"
+actix-rt = "*"
