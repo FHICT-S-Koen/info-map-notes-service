@@ -1,11 +1,17 @@
-#[macro_use]
-extern crate diesel;
-
 use std::pin::Pin;
 
 use actix_web::{dev::ServiceRequest, web, App, Error, HttpServer};
+use actix_web_httpauth::{
+    extractors::{AuthenticationError, bearer::{BearerAuth, Config}}, 
+    middleware::HttpAuthentication
+};
+
+#[macro_use]
+extern crate diesel;
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
+
+pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
 
 mod auth;
 mod errors;
@@ -13,12 +19,12 @@ mod handlers;
 mod models;
 mod schema;
 
-pub type Pool = r2d2::Pool<ConnectionManager<PgConnection>>;
-
-use actix_web_httpauth::extractors::bearer::{BearerAuth, Config};
-use actix_web_httpauth::extractors::AuthenticationError;
-use actix_web_httpauth::middleware::HttpAuthentication;
-use handlers::{add_note, delete_note, get_note_by_id, get_notes};
+use handlers::{
+    add_note, 
+    delete_note, 
+    get_note_by_id, 
+    get_notes
+};
 
 async fn validator(req: ServiceRequest, credentials: BearerAuth) -> Result<ServiceRequest, Error> {
     let config = req
@@ -53,10 +59,14 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(auth)
             .data(pool.clone())
-            .route("/api/v1", web::get().to(get_notes))
-            .route("/api/v1/{id}", web::get().to(get_note_by_id))
-            .route("/api/v1", web::post().to(add_note))
-            .route("/api/v1/{id}", web::delete().to(delete_note))
+            .service(
+                web::scope("/api/v1")
+                    .service(get_notes)
+                    .service(get_note_by_id)
+                    .service(add_note)
+                    .service(delete_note)
+        )
+            
     })
     .bind("localhost:8081")?
     .run()
