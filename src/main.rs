@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate diesel;
 
+use std::pin::Pin;
+
 use actix_web::{dev::ServiceRequest, web, App, Error, HttpServer};
 use diesel::prelude::*;
 use diesel::r2d2::{self, ConnectionManager};
@@ -21,7 +23,7 @@ use handlers::{add_note, delete_note, get_note_by_id, get_notes};
 async fn validator(req: ServiceRequest, credentials: BearerAuth) -> Result<ServiceRequest, Error> {
     let config = req
         .app_data::<Config>()
-        .map(|data| data.get_ref().clone())
+        .map(|data| Pin::new(data).get_ref().clone())
         .unwrap_or_else(Default::default);
     match auth::validate_token(credentials.token()) {
         Ok(res) => {
@@ -35,7 +37,7 @@ async fn validator(req: ServiceRequest, credentials: BearerAuth) -> Result<Servi
     }
 }
 
-#[actix_rt::main]
+#[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     std::env::set_var("RUST_LOG", "actix_web=debug");
