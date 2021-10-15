@@ -27,7 +27,7 @@ async fn validator(req: ServiceRequest, credentials: BearerAuth) -> Result<Servi
         .unwrap_or_else(Default::default);
     match auth::validate_token(credentials.token()) {
         Ok(res) => {
-            if res == true {
+            if res {
                 Ok(req)
             } else {
                 Err(AuthenticationError::from(config).into())
