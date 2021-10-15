@@ -1,6 +1,6 @@
 use std::pin::Pin;
 
-use actix_web::{dev::ServiceRequest, web, App, Error, HttpServer};
+use actix_web::{dev::ServiceRequest, web::scope, App, Error, HttpServer};
 use actix_web_httpauth::{
     extractors::{AuthenticationError, bearer::{BearerAuth, Config}}, 
     middleware::HttpAuthentication
@@ -59,12 +59,11 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(auth)
             .data(pool.clone())
-            .service(
-                web::scope("/api/v1")
-                    .service(get_notes)
-                    .service(get_note_by_id)
-                    .service(add_note)
-                    .service(delete_note)
+            .service(scope("/api/v1")
+                .service(get_notes)
+                .service(get_note_by_id)
+                .service(add_note)
+                .service(delete_note)
         )
             
     })
