@@ -2,7 +2,7 @@ FROM rust:latest AS builder
 
 RUN update-ca-certificates
 
-ENV USER=myip
+ENV USER=user
 ENV UID=10001
 
 RUN adduser \
@@ -15,7 +15,7 @@ RUN adduser \
     "${USER}"
 
 
-WORKDIR /myip
+WORKDIR /app
 
 COPY ./ .
 
@@ -28,10 +28,10 @@ FROM debian:buster-slim
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
-WORKDIR /myip
+WORKDIR /app
 
-COPY --from=builder /myip/target/release/myip ./
+COPY --from=builder /app/target/release/notes-service ./
 
-USER myip:myip
+USER user:user
 
-CMD ["/myip/myip"]
+CMD ["/app/notes-service"]
