@@ -16,6 +16,4 @@ WORKDIR /app
 
 COPY --from=builder /app/target/release/notes-service ./
 
-USER user:user
-
 CMD ["/app/notes-service"]
