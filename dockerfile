@@ -1,6 +1,6 @@
 FROM rust:latest AS builder
 
-RUN apt-get install libssl1.0.0 libssl-dev
+RUN apt-get update && apt-get install libssl1.0.0 libssl-dev
 RUN update-ca-certificates
 
 ENV USER=user
