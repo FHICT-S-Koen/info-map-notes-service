@@ -1,7 +1,6 @@
 FROM rust:latest AS builder
 
-RUN rustup target add x86_64-unknown-linux-musl
-RUN apt update && apt install -y musl-tools musl-dev
+RUN apt-get install libssl1.0.0 libssl-dev
 RUN update-ca-certificates
 
 ENV USER=user
@@ -23,16 +22,16 @@ COPY ./ .
 
 ARG AUTHORITY=abc
 
-RUN cargo build --target x86_64-unknown-linux-musl --release
+RUN cargo build --release
 
-FROM scratch
+FROM debian:buster-slim
 
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
 WORKDIR /app
 
-COPY --from=builder /app/target/x86_64-unknown-linux-musl/release/notes-service ./
+COPY --from=builder /app/target/release/notes-service ./
 
 USER user:user
 
