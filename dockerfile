@@ -10,4 +10,4 @@ RUN cargo build
 
 WORKDIR /myapp
 
-CMD ["/myapp/myapp"]
+CMD ["/myapp/notes-service"]
