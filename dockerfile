@@ -1,7 +1,5 @@
 FROM rust:latest AS builder
 
-RUN rustup target add x86_64-unknown-linux-musl
-RUN apt update && apt install -y musl-tools musl-dev
 RUN update-ca-certificates
 
 ENV USER=myip
@@ -23,16 +21,16 @@ COPY ./ .
 
 ARG AUTHORITY=abc
 
-RUN cargo build --target x86_64-unknown-linux-musl --release
+RUN cargo build --release
 
-FROM scratch
+FROM debian:buster-slim
 
 COPY --from=builder /etc/passwd /etc/passwd
 COPY --from=builder /etc/group /etc/group
 
 WORKDIR /myip
 
-COPY --from=builder /myip/target/x86_64-unknown-linux-musl/release/myip ./
+COPY --from=builder /myip/target/release/myip ./
 
 USER myip:myip
 
