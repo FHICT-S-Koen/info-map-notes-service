@@ -1,5 +1,6 @@
 FROM rust:latest AS builder
 
+RUN rustup target add x86_64-unknown-linux-musl
 RUN apt-get update && apt-get install libssl1.0.0 libssl-dev
 RUN update-ca-certificates
 
