@@ -1,37 +1,16 @@
-FROM rust:latest AS builder
+FROM rust:latest as build
+ENV PKG_CONFIG_ALLOW_CROSS=1
 
-RUN update-ca-certificates
+WORKDIR /usr/src/notes-service
+COPY . .
 
-ENV USER=user
-ENV UID=10001
-
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    "${USER}"
-
-
-WORKDIR /app
-
-COPY ./ .
-
+ARG DATABASE_URL=abc
 ARG AUTHORITY=abc
 
-RUN cargo build --release
+RUN cargo install --path .
 
-FROM debian:buster-slim
+FROM gcr.io/distroless/cc-debian10
 
-COPY --from=builder /etc/passwd /etc/passwd
-COPY --from=builder /etc/group /etc/group
+COPY --from=build /usr/local/cargo/bin/notes-service /usr/local/bin/notes-service
 
-WORKDIR /app
-
-COPY --from=builder /app/target/release/notes-service ./
-
-USER user:user
-
-CMD ["/app/notes-service"]
+CMD ["notes-service"]
