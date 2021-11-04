@@ -14,22 +14,20 @@ jobs:
     - name: Update local toolchain
       run: |
         rustup update
-        rustup component add clippy
         rustup install nightly
 
     - name: Toolchain info
       run: |
         cargo --version
         rustc --version
-        cargo clippy --version
 
     # - name: Test
     #   run: |
-    #     cargo clippy
     #     cargo test --workspace
     
     - name: Build Docker image
       run: docker build -t registry.heroku.com/${{ secrets.HEROKU_APP }}/web:latest 
+            --build-arg DATABASE_URL=${{ secrets.DATABASE_URL }}
             --build-arg AUTHORITY=${{ secrets.INFO_MAP_AUTH0_DOMAIN }} .
 
     - name: Docker image info
