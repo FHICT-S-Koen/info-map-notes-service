@@ -48,6 +48,10 @@ async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
     std::env::set_var("RUST_LOG", "actix_web=debug");
     let database_url = std::env::var("DATABASE_URL").expect("DATABASE_URL must be set");
+    let port = std::env::var("PORT")
+        .expect("PORT must be set")
+        .parse::<u16>()
+        .expect("PORT must be of type u16");
 
     let manager = ConnectionManager::<PgConnection>::new(database_url);
     let pool: Pool = r2d2::Pool::builder()
@@ -67,7 +71,7 @@ async fn main() -> std::io::Result<()> {
         )
             
     })
-    .bind("localhost:8081")?
+    .bind(("0.0.0.0", port))?
     .run()
     .await
 }
