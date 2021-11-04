@@ -38,7 +38,7 @@ ENV DATABASE_URL=${DATABASE_URL}
 ENV AUTHORITY=${AUTHORITY}
 ENV PORT=${PORT}
 
-CMD ["notes-service"]
+CMD ["/usr/local/bin/notes-service"]
 
 
 # FROM rust:latest
