@@ -7,7 +7,7 @@ COPY . .
 
 RUN cargo install --path .
 
-FROM gcr.io/distroless/cc-debian10
+FROM gcr.io/distroless/cc
 
 COPY --from=build /usr/local/cargo/bin/notes-service /usr/local/bin/notes-service
 COPY --from=build /usr/lib/x86_64-linux-gnu/libpq.so.5 /lib/x86_64-linux-gnu/libpq.so.5
