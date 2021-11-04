@@ -38,40 +38,4 @@ ENV DATABASE_URL=${DATABASE_URL}
 ENV AUTHORITY=${AUTHORITY}
 ENV PORT=${PORT}
 
-CMD ["/usr/local/bin/notes-service"]
-
-
-# FROM rust:latest
-
-# WORKDIR /app
-
-# COPY . .
-
-# RUN cargo install --path .
-
-# # FROM debian:11-slim
-
-# # COPY --from=build /usr/local/cargo/bin/notes-service /usr/local/bin/notes-service
-# EXPOSE 8081
-# CMD ["notes-service"]
-
-# FROM rust:latest as build
-# ENV PKG_CONFIG_ALLOW_CROSS=1
-
-# WORKDIR /app
-# COPY . .
-
-# ARG DATABASE_URL=abc
-# ARG AUTHORITY=abc
-
-# ENV DATABASE_URL=${DATABASE_URL}
-# ENV AUTHORITY=${AUTHORITY}
-
-# RUN cargo build --release
-
-# FROM debian:bullseye-slim
-
-# RUN apt-get update && apt-get install postgresql -y
-# COPY --from=build /app/target/release/notes-service /
-
-# CMD ["./notes-service"]
+ENTRYPOINT ["notes-service"]
